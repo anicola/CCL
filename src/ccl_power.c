@@ -519,7 +519,7 @@ static void ccl_cosmology_compute_power_class(ccl_cosmology * cosmo, int * statu
   }
 
   if(*status==0)
-    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d_lin,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,status);
+    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d_lin,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,-9999.,status);
 
   //Non-linear power
   //At the moment KMIN can't be less than CLASS's kmin in the nonlinear case.
@@ -556,7 +556,7 @@ static void ccl_cosmology_compute_power_class(ccl_cosmology * cosmo, int * statu
   }
   
   if(*status==0)    
-    cosmo->data.p_nl=ccl_p2d_t_new(na,z,nk,x,y2d_nl,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,status);
+    cosmo->data.p_nl=ccl_p2d_t_new(na,z,nk,x,y2d_nl,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,-9999.,status);
 
   ccl_free_class_structs(cosmo, &ba,&th,&pt,&tr,&pm,&sp,&nl,&le,init_arr,status);
   free(x);
@@ -897,7 +897,7 @@ static void ccl_cosmology_compute_power_eh(ccl_cosmology * cosmo, int * status)
   
   // Check that ccl_growth_factor didn't fail
   if (*status==0) {
-    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,status);
+    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,-9999.,status);
     cosmo->computed_power=true;
     sigma8 = ccl_sigma8(cosmo,status);
     cosmo->computed_power=false;
@@ -915,7 +915,7 @@ static void ccl_cosmology_compute_power_eh(ccl_cosmology * cosmo, int * status)
    // Free the previous P(k,a) spline, and allocate a new one to store the
     // properly-normalized P(k,a)
     ccl_p2d_t_free(cosmo->data.p_lin);
-    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,status);
+    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,-9999.,status);
   }
   
   if(*status==0) {
@@ -924,7 +924,7 @@ static void ccl_cosmology_compute_power_eh(ccl_cosmology * cosmo, int * status)
   }
   
   if(*status==0)
-    cosmo->data.p_nl=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,status);
+    cosmo->data.p_nl=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,-9999.,status);
 
   // Free temporary arrays
   free(eh); free(x); free(y); free(z); free(y2d);
@@ -1030,7 +1030,7 @@ static void ccl_cosmology_compute_power_bbks(ccl_cosmology * cosmo, int * status
   }
 
   if(*status==0) {
-    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,status);
+    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,-9999.,status);
     cosmo->computed_power=true;
     sigma8 = ccl_sigma8(cosmo,status);
     cosmo->computed_power=false;
@@ -1048,7 +1048,7 @@ static void ccl_cosmology_compute_power_bbks(ccl_cosmology * cosmo, int * status
     // Free the previous P(k,a) spline, and allocate a new one to store the
     // properly-normalized P(k,a)
     ccl_p2d_t_free(cosmo->data.p_lin);
-    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,status);
+    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,-9999.,status);
   }
   
   if(*status==0) {
@@ -1057,7 +1057,7 @@ static void ccl_cosmology_compute_power_bbks(ccl_cosmology * cosmo, int * status
   }
   
   if(*status==0)
-    cosmo->data.p_nl=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,status);
+    cosmo->data.p_nl=ccl_p2d_t_new(na,z,nk,x,y2d,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,-9999.,status);
 
   free(x); free(y); free(z); free(y2d);
 }
@@ -1233,7 +1233,7 @@ static void ccl_cosmology_compute_power_emu(ccl_cosmology * cosmo, int * status)
   }
 
   if(*status==0)
-    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d_lin,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,status);
+    cosmo->data.p_lin=ccl_p2d_t_new(na,z,nk,x,y2d_lin,1,2,ccl_p2d_cclgrowth,1,NULL,0,ccl_p2d_3,-9999.,status);
 
   if (*status == 0) {
     //Now start the NL computation with the emulator
@@ -1319,7 +1319,7 @@ static void ccl_cosmology_compute_power_emu(ccl_cosmology * cosmo, int * status)
 
   if(*status==0) {
     cosmo->data.p_nl=ccl_p2d_t_new(na,zemu,NK_EMU,logx,y2d_nl,1,2,ccl_p2d_no_extrapol,
-				   1,NULL,0,ccl_p2d_3,status);
+				   1,NULL,0,ccl_p2d_3,-9999.,status);
   }
 
   ccl_free_class_structs(cosmo, &ba,&th,&pt,&tr,&pm,&sp,&nl,&le,init_arr,status);

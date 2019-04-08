@@ -9,7 +9,7 @@ class Pk2D(object):
     """A power spectrum class holding the information needed to reconstruct an
     arbitrary function of wavenumber and scale factor.
     """
-    def __init__(self,pkfunc=None,a_arr=None,lk_arr=None,pk_arr=None,is_logp=True) :
+    def __init__(self,pkfunc=None,a_arr=None,lk_arr=None,pk_arr=None,is_logp=True,bounds_value=-9999.) :
         """Constructor for Pk2D objects.
 
         Args:
@@ -65,7 +65,7 @@ class Pk2D(object):
                 pkflat[ia,:]=pkfunc(k=np.exp(lk_arr),a=a)
             pkflat=pkflat.flatten()
             
-        self.psp,status=lib.set_p2d_new_from_arrays(lk_arr,a_arr,pkflat,int(is_logp),status)
+        self.psp,status=lib.set_p2d_new_from_arrays(lk_arr,a_arr,pkflat,int(is_logp),bounds_value,status)
         check(status)
         self.has_psp=True
 

@@ -17,7 +17,7 @@ ccl_p2d_t *ccl_p2d_t_new(int na,double *a_arr,
 			 int is_pk_log,
 			 double (*growth)(double),
 			 double growth_factor_0,
-			 ccl_p2d_interp_t interp_type,
+			 ccl_p2d_interp_t interp_type,double bounds_value,
 			 int *status)
 {
   int s2dstatus;
@@ -46,6 +46,7 @@ ccl_p2d_t *ccl_p2d_t_new(int na,double *a_arr,
     psp->growth=growth;
     psp->growth_factor_0=growth_factor_0;
     psp->pk=NULL;
+    psp->bounds_value=bounds_value;
     if(fabs(psp->amax-1)>1E-4)
       *status=CCL_ERROR_SPLINE;
   }
@@ -108,46 +109,55 @@ double ccl_p2d_t_eval(ccl_p2d_t *psp,double lk,double a,ccl_cosmology *cosmo,
 
   //Now extrapolate in k if needed
   if(is_hik) {
-    pk_post=pk_pre;
-    if(psp->extrap_order_hik>0) {
-      double pd;
-      double dlk=lk-lk_ev;
-      spstatus=gsl_spline2d_eval_deriv_x_e(psp->pk,lk_ev,a_ev,NULL,NULL,&pd);
-      if(spstatus) {
-	*status=CCL_ERROR_SPLINE_EV;
-	return -1;
-      }
-      pk_post+=pd*dlk;
-      if(psp->extrap_order_hik>1) {
-	spstatus=gsl_spline2d_eval_deriv_xx_e(psp->pk,lk_ev,a_ev,NULL,NULL,&pd);
-	if(spstatus) {
-	  *status=CCL_ERROR_SPLINE_EV;
-	  return -1;
-	}
-	pk_post+=pd*dlk*dlk*0.5;
-      }
+    if(psp->bounds_value!=-9999.) {
+        pk_post=psp->bounds_value;
     }
+    else {
+        pk_post=pk_pre;
+        if(psp->extrap_order_hik>0) {
+          double pd;
+          double dlk=lk-lk_ev;
+          spstatus=gsl_spline2d_eval_deriv_x_e(psp->pk,lk_ev,a_ev,NULL,NULL,&pd);
+          if(spstatus) {
+        *status=CCL_ERROR_SPLINE_EV;
+        return -1;
+          }
+          pk_post+=pd*dlk;
+          if(psp->extrap_order_hik>1) {
+        spstatus=gsl_spline2d_eval_deriv_xx_e(psp->pk,lk_ev,a_ev,NULL,NULL,&pd);
+        if(spstatus) {
+          *status=CCL_ERROR_SPLINE_EV;
+          return -1;
+        }
+        pk_post+=pd*dlk*dlk*0.5;
+          }
+        }
+     }
   }
   else if(is_lok) {
-    pk_post=pk_pre;
-    pk_post=pk_pre;
-    if(psp->extrap_order_lok>0) {
-      double pd;
-      double dlk=lk-lk_ev;
-      spstatus=gsl_spline2d_eval_deriv_x_e(psp->pk,lk_ev,a_ev,NULL,NULL,&pd);
-      if(spstatus) {
-	*status=CCL_ERROR_SPLINE_EV;
-	return -1;
-      }
-      pk_post+=pd*dlk;
-      if(psp->extrap_order_lok>1) {
-	spstatus=gsl_spline2d_eval_deriv_xx_e(psp->pk,lk_ev,a_ev,NULL,NULL,&pd);
-	if(spstatus) {
-	  *status=CCL_ERROR_SPLINE_EV;
-	  return -1;
-	}
-	pk_post+=pd*dlk*dlk*0.5;
-      }
+    if(psp->bounds_value!=-9999.) {
+        pk_post=psp->bounds_value;
+    }
+    else {
+        pk_post=pk_pre;
+        if(psp->extrap_order_lok>0) {
+          double pd;
+          double dlk=lk-lk_ev;
+          spstatus=gsl_spline2d_eval_deriv_x_e(psp->pk,lk_ev,a_ev,NULL,NULL,&pd);
+          if(spstatus) {
+        *status=CCL_ERROR_SPLINE_EV;
+        return -1;
+          }
+          pk_post+=pd*dlk;
+          if(psp->extrap_order_lok>1) {
+        spstatus=gsl_spline2d_eval_deriv_xx_e(psp->pk,lk_ev,a_ev,NULL,NULL,&pd);
+        if(spstatus) {
+          *status=CCL_ERROR_SPLINE_EV;
+          return -1;
+        }
+        pk_post+=pd*dlk*dlk*0.5;
+          }
+        }
     }
   }
   else
@@ -159,14 +169,19 @@ double ccl_p2d_t_eval(ccl_p2d_t *psp,double lk,double a,ccl_cosmology *cosmo,
 
   //Extrapolate in a if needed
   if(is_hiz) {
-    double gz;
-    if(psp->extrap_linear_growth==ccl_p2d_cclgrowth) //Use CCL's growth function
-      gz=ccl_growth_factor(cosmo,a,status)/ccl_growth_factor(cosmo,a_ev,status);
-    else if(psp->extrap_linear_growth==ccl_p2d_customgrowth) //Use internal growth function
-      gz=psp->growth(a)/psp->growth(a_ev);
-    else //Use constant growth factor
-      gz=psp->growth_factor_0;
-    pk_post*=gz*gz;
+    if(psp->bounds_value!=-9999.) {
+        pk_post=psp->bounds_value;
+    }
+    else {
+        double gz;
+        if(psp->extrap_linear_growth==ccl_p2d_cclgrowth) //Use CCL's growth function
+          gz=ccl_growth_factor(cosmo,a,status)/ccl_growth_factor(cosmo,a_ev,status);
+        else if(psp->extrap_linear_growth==ccl_p2d_customgrowth) //Use internal growth function
+          gz=psp->growth(a)/psp->growth(a_ev);
+        else //Use constant growth factor
+          gz=psp->growth_factor_0;
+        pk_post*=gz*gz;
+    }
   }
 
   return pk_post;

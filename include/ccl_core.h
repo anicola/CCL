@@ -38,6 +38,7 @@ typedef struct {
   int is_log; /**< Do I hold the values of log(P(k,a))?*/
   double (*growth)(double); /**< Custom extrapolating growth function*/
   double growth_factor_0; /**< Constant extrapolating growth factor*/
+  double bounds_value;
   gsl_spline2d *pk; /**< Spline holding the values of P(k,a)*/
 } ccl_p2d_t;
 

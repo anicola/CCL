@@ -75,6 +75,7 @@ CTEST2(p2d,sanity) {
 		    1, //is_pk_log
 		    NULL,0,
 		    ccl_p2d_3,
+		    -9999.,
 		    &status);
   ASSERT_TRUE(status);
   ccl_p2d_t_free(psp);
@@ -91,6 +92,7 @@ CTEST2(p2d,sanity) {
   		    1, //is_pk_log
   		    growth_function,0,
   		    ccl_p2d_3,
+  		    -9999.,
   		    &status);
   ASSERT_TRUE(status==0);
 
@@ -156,6 +158,7 @@ CTEST2(p2d,sanity) {
   		    1, //is_pk_log
   		    NULL,0,
   		    ccl_p2d_3,
+  		    -9999.,
   		    &status);
   ASSERT_TRUE(status==0);
 

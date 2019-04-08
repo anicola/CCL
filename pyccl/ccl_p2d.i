@@ -18,12 +18,12 @@
 ccl_p2d_t *set_p2d_new_from_arrays(double* lkarr,int nk,
 				   double* aarr,int na,
 				   double* pkarr,int npk,
-				   int is_logp,
+				   int is_logp,double bounds_value,
 				   int *status)
 {
   ccl_p2d_t *psp=ccl_p2d_t_new(na,aarr,nk,lkarr,pkarr,
 			       1,2,ccl_p2d_cclgrowth,
-			       is_logp,NULL,0,ccl_p2d_3,status);
+			       is_logp,NULL,0,ccl_p2d_3,bounds_value,status);
   return psp;
 }
 

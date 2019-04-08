@@ -34,7 +34,7 @@ ccl_p2d_t *ccl_p2d_t_new(int na,double *a_arr,
 			 int is_pk_log,
 			 double (*growth)(double),
 			 double growth_factor_0,
-			 ccl_p2d_interp_t interp_type,
+			 ccl_p2d_interp_t interp_type,double bounds_value,
 			 int *status);
 
 /**
