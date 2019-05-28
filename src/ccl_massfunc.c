@@ -419,6 +419,25 @@ static double ccl_halo_b1(ccl_cosmology *cosmo, double halomass, double a, doubl
     return 1.-fit_A*pow(nu,fit_a)/(pow(nu,fit_a)+pow(delta_c_Tinker,fit_a))+fit_B*pow(nu,fit_b)+fit_C*pow(nu,fit_c);
     break;
 
+    //this version uses b(nu) parameterization, Eq. 6 in Tinker et al. 2010
+    // use this for consistency with Tinker et al. 2010 fitting function for halo bias
+  case ccl_tinker:
+    y = log10(odelta);
+    //critical collapse overdensity assumed in this model
+    delta_c_Tinker = 1.686;
+    //peak height - note that this factorization is incorrect for e.g. massive neutrino cosmologies
+    nu = delta_c_Tinker/(sigma);
+    // Table 2 in https://arxiv.org/pdf/1001.3162.pdf
+    fit_A = 1.0 + 0.24*y*exp(-pow(4./y,4.));
+    fit_a = 0.44*y-0.88;
+    fit_B = 0.183;
+    fit_b = 1.5;
+    fit_C = 0.019+0.107*y+0.19*exp(-pow(4./y,4.));
+    fit_c = 2.4;
+
+    return 1.-fit_A*pow(nu,fit_a)/(pow(nu,fit_a)+pow(delta_c_Tinker,fit_a))+fit_B*pow(nu,fit_b)+fit_C*pow(nu,fit_c);
+    break;
+
   default:
     *status = CCL_ERROR_MF;
     ccl_cosmology_set_status_message(cosmo ,
